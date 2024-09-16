@@ -1,0 +1,214 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #dfeefa;
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    background-color: #c0d9f8;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.msn-logo {
+    height: 40px;
+    margin-right: 10px;
+}
+
+.header h1 {
+    color: #444;
+    font-size: 24px;
+    margin: 0;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+}
+
+.user-info span {
+    margin-right: 20px;
+    font-weight: bold;
+}
+
+.user-info a {
+    color: #0078d4;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.user-info a:hover {
+    text-decoration: underline;
+}
+
+.content {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.contacts-box {
+    background-color: #ffffff;
+    border: 1px solid #c0c0c0;
+    border-radius: 5px;
+    width: 300px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.contacts-box h2 {
+    font-size: 20px;
+    color: #444;
+    margin-bottom: 15px;
+}
+
+.contacts h3 {
+    font-size: 16px;
+    color: #0078d4;
+    margin-bottom: 10px;
+    margin-top: 20px;
+}
+
+.contacts ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.contacts li {
+    font-size: 14px;
+    padding: 5px 0;
+    display: flex;
+    align-items: center;
+}
+
+.contacts li.online::before {
+    content: '';
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    background-color: #00c000;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.contacts li.offline::before {
+    content: '';
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    background-color: #c0c0c0;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.contacts .status {
+    margin-left: auto;
+    color: #666;
+}
+
+.login-box .avatar {
+    width: 160px;
+    height: 130px;
+    border-radius: 50%;
+    margin-bottom: 30px;
+}
+
+.notification {
+    display: none;
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    background-color: #0078d4;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    font-weight: bold;
+    z-index: 1000;
+}
+
+.chat-window {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #ffffff;
+    border: none;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.chat-header {
+    background-color: #0078d4;
+    color: white;
+    padding: 10px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chat-controls button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.chat-controls button:hover {
+    opacity: 0.8;
+}
+
+.chat-messages {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    background-color: #f1f1f1;
+}
+
+.chat-input {
+    padding: 15px;
+    border: none;
+    border-top: 1px solid #c0c0c0;
+    outline: none;
+    font-size: 16px;
+}
+
+.message {
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+}
+
+.sent {
+    text-align: right;
+    color: #0078d4;
+}
+
+.received {
+    text-align: left;
+    color: #333;
+}
+
+.minimized {
+    height: 50px;
+    width: 300px;
+    bottom: 0;
+    right: 0;
+    top: auto;
+    left: auto;
+    overflow: hidden;
+}
+
+.flashing {
+    background-color: orange;
+}

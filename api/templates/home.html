@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MSN Messenger - Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="header">
+        <img src="{{ url_for('static', filename='images/msn_icon.png') }}" class="msn-logo" alt="MSN Icon">
+        <h1>MSN Messenger</h1>
+        <div class="user-info">
+            <span>{{ username }}</span>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </div>
+    <div class="content">
+        <div class="contacts-box">
+            <h2>Contacts</h2>
+            <div class="contacts">
+                <h3>Online</h3>
+                <ul id="online-contacts">
+                    {% for contact in online_contacts %}
+                        <li id="contact-{{ contact }}" class="online" onclick="openChatWindow('{{ contact }}')">{{ contact }} <span class="status">(Online)</span></li>
+                    {% endfor %}
+                </ul>
+                <h3>Offline</h3>
+                <ul id="offline-contacts">
+                    {% for contact in offline_contacts %}
+                        <li id="contact-{{ contact }}" class="offline">{{ contact }} <span class="status">(Offline)</span></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat window template -->
+    <div id="chat-template" class="chat-window" style="display: none;">
+        <div class="chat-header">
+            <span id="chat-username"></span>
+            <div class="chat-controls">
+                <button onclick="minimizeChatWindow(this)">_</button>
+                <button onclick="closeChatWindow(this)">X</button>
+            </div>
+        </div>
+        <div class="chat-messages"></div>
+        <input type="text" class="chat-input" placeholder="Type a message..." onkeypress="sendMessage(event, this)">
+    </div>
+
+    <script>
+        function openChatWindow(username) {
+            // Check if chat window already exists
+            if (document.getElementById('chat-' + username)) {
+                maximizeChatWindow(username);
+                return;
+            }
+
+            // Clone the chat template
+            var chatWindow = document.getElementById('chat-template').cloneNode(true);
+            chatWindow.style.display = 'block';
+            chatWindow.id = 'chat-' + username;
+            chatWindow.querySelector('#chat-username').innerText = username;
+
+            // Append to body
+            document.body.appendChild(chatWindow);
+
+            // Load chat history (if any)
+            $.getJSON("/get_chat_history", {with: username}, function(data) {
+                data.history.forEach(function(message) {
+                    var messageElement = document.createElement('div');
+                    messageElement.classList.add('message', message.from === username ? 'received' : 'sent');
+                    messageElement.innerText = message.message;
+                    chatWindow.querySelector('.chat-messages').appendChild(messageElement);
+                });
+                chatWindow.querySelector('.chat-messages').scrollTop = chatWindow.querySelector('.chat-messages').scrollHeight;
+            });
+        }
+
+        function minimizeChatWindow(button) {
+            var chatWindow = button.closest('.chat-window');
+            chatWindow.classList.add('minimized');
+        }
+
+        function maximizeChatWindow(username) {
+            var chatWindow = document.getElementById('chat-' + username);
+            chatWindow.classList.remove('minimized');
+        }
+
+        function closeChatWindow(button) {
+            var chatWindow = button.closest('.chat-window');
+            chatWindow.remove();
+        }
+
+        function sendMessage(event, input) {
+            if (event.key === 'Enter') {
+                var message = input.value;
+                if (message.trim() === '') return;
+
+                var chatWindow = input.closest('.chat-window');
+                var username = chatWindow.querySelector('#chat-username').innerText;
+
+                // Add message to chat window
+                var messageElement = document.createElement('div');
+                messageElement.classList.add('message', 'sent');
+                messageElement.innerText = message;
+                chatWindow.querySelector('.chat-messages').appendChild(messageElement);
+
+                // Scroll to the bottom
+                chatWindow.querySelector('.chat-messages').scrollTop = chatWindow.querySelector('.chat-messages').scrollHeight;
+
+                // Clear input
+                input.value = '';
+
+                // Send the message to the server
+                socket.emit('send_message', {to: username, message: message});
+            }
+        }
+
+        // Receive messages from the server
+        socket.on('receive_message', function(data) {
+            var chatWindow = document.getElementById('chat-' + data.from);
+            if (!chatWindow) {
+                openChatWindow(data.from);
+                chatWindow = document.getElementById('chat-' + data.from);
+                minimizeChatWindow(chatWindow.querySelector('.chat-controls button'));
+                flashChatWindow(chatWindow);
+            }
+
+            var messageElement = document.createElement('div');
+            messageElement.classList.add('message', 'received');
+            messageElement.innerText = data.message;
+            chatWindow.querySelector('.chat-messages').appendChild(messageElement);
+
+            // Scroll to the bottom
+            chatWindow.querySelector('.chat-messages').scrollTop = chatWindow.querySelector('.chat-messages').scrollHeight;
+        });
+
+        function flashChatWindow(chatWindow) {
+            var flashInterval = setInterval(function() {
+                chatWindow.classList.toggle('flashing');
+            }, 500);
+
+            chatWindow.addEventListener('click', function() {
+                clearInterval(flashInterval);
+                chatWindow.classList.remove('flashing');
+            });
+        }
+    </script>
+</body>
+</html>

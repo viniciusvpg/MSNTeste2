@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MSN Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <center><div class="login-box"><br><br><br><br>
+        <img src="{{ url_for('static', filename='images/msn_icon.png') }}" class="avatar" alt="MSN Icon">
+        <h1>MSN Messenger</h1>
+        <form action="/" method="POST">
+            <p>Username</p>
+            <input type="text" name="username" placeholder="Enter Username">
+            <p>Password</p>
+            <input type="password" name="password" placeholder="Enter Password"><br><br>
+            <input type="submit" value="Login">
+            {% if error %}
+            <p class="error">{{ error }}</p>
+            {% endif %}
+        </form>
+    </div></center>
+</body>
+</html>
